@@ -1,0 +1,33 @@
+# ── Python (backend) ──────────────────────────────────────────────────────────
+backend/.venv/
+backend/__pycache__/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Environment — NEVER commit secrets ────────────────────────────────────────
+.env
+backend/.env
+.env.local
+.env.*.local
+
+# ── Uploads / user data — never commit documents people upload ────────────────
+backend/uploads/
+backend/data/
+
+# ── Root README (learning notes — keep private) ───────────────────────────────
+/README.md
+
+# ── macOS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+**/.DS_Store
+
+# ── Docker ─────────────────────────────────────────────────────────────────────
+# docker-compose.override.yml
+
+# ── VS Code ────────────────────────────────────────────────────────────────────
+.vscode/
