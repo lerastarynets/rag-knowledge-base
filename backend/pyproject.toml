@@ -17,6 +17,8 @@ dependencies = [
     "qdrant-client",
     "cohere",
     "pymupdf",
+    "pypdf",
+    "docx2txt",
     "python-docx",
     "youtube-transcript-api",
     "beautifulsoup4",
