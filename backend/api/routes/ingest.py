@@ -2,24 +2,32 @@
 
 from __future__ import annotations
 
+import tempfile
 import uuid
 
 from fastapi import APIRouter, UploadFile
 
+from ingestor import file_dispatcher, url_dispatcher
 from models.schemas import IngestJobResponse, IngestUrlRequest
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
 
 
 @router.post("/file", response_model=IngestJobResponse)
-async def ingest_file(file: UploadFile) -> IngestJobResponse:
+async def ingest_file_route(file: UploadFile) -> IngestJobResponse:
     # TODO: pass file to the ingestor pipeline and enqueue a processing job
+    with tempfile.NamedTemporaryFile(delete=True) as tmp:
+        # 2. Write the uploaded file content to the temp file
+        tmp.write(await file.read())
+        tmp.flush()
+        await file_dispatcher(file_name=tmp.name, file_content_type=file.content_type or "")
     job_id = str(uuid.uuid4())
     return IngestJobResponse(job_id=job_id, status="queued")
 
 
 @router.post("/url", response_model=IngestJobResponse)
-async def ingest_url(body: IngestUrlRequest) -> IngestJobResponse:
+async def ingest_url_route(body: IngestUrlRequest) -> IngestJobResponse:
     # TODO: pass URL to the ingestor pipeline and enqueue a processing job
+    await url_dispatcher(body.url)
     job_id = str(uuid.uuid4())
     return IngestJobResponse(job_id=job_id, status="queued")
