@@ -32,4 +32,4 @@ class Settings(BaseSettings):
     LANGCHAIN_ENDPOINT: str = "https://api.smith.langchain.com"
 
 
-settings = Settings()
+settings = Settings.model_validate({})
