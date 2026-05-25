@@ -6,5 +6,5 @@ async def ingest_pdf(file_path: str):
     loader = PyPDFLoader(file_path=file_path)
     documents = loader.load()
     print("ingesting pdf")
-    ingest_documents(documents)
+    await ingest_documents(documents)
     print("pdf ingested")

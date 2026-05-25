@@ -7,5 +7,5 @@ async def ingest_url(url: HttpUrl):
     loader = WebBaseLoader(web_paths=[str(url)])
     documents = loader.load()
     print("ingesting url")
-    ingest_documents(documents)
+    await ingest_documents(documents)
     print("url ingested")

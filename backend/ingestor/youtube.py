@@ -10,5 +10,5 @@ async def ingest_youtube(url: HttpUrl):
     )
     documents = loader.load()
     print("ingesting youtube")
-    ingest_documents(documents)
+    await ingest_documents(documents)
     print("youtube ingested")

@@ -6,5 +6,5 @@ async def ingest_docx(file_path: str):
     loader = Docx2txtLoader(file_path=file_path)
     documents = loader.load()
     print("ingesting docx")
-    ingest_documents(documents)
+    await ingest_documents(documents)
     print("docx ingested")
