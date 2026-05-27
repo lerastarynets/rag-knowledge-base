@@ -4,24 +4,10 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
-from pydantic import SecretStr
-from qdrant_client import QdrantClient
 import asyncio
-
-from config import settings
+from services import vector_store
 
 BATCH_SIZE = 100
-
-embeddings = OpenAIEmbeddings(
-        model="text-embedding-3-small",
-        api_key=SecretStr(settings.OPENAI_API_KEY),
-    )
-
-vector_store = QdrantVectorStore(
-    client=QdrantClient(url=settings.QDRANT_URL, api_key=settings.QDRANT_API_KEY or None),
-    collection_name=settings.QDRANT_COLLECTION_NAME,
-    embedding=embeddings,
-)
 
 async def split_documents(documents: list[Document]) -> list[Document]:
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
