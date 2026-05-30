@@ -1,6 +1,7 @@
 """Configuration module: loads and exposes application settings from environment variables."""
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
 
 
 class Settings(BaseSettings):
@@ -28,8 +29,13 @@ class Settings(BaseSettings):
     # LangSmith — LangChain tracing and evaluation
     LANGSMITH_API_KEY: str
     LANGSMITH_PROJECT: str = "rag-knowledge-base"
-    LANGCHAIN_TRACING_V2: str = "true"
-    LANGCHAIN_ENDPOINT: str = "https://api.smith.langchain.com"
+    LANGSMITH_TRACING: str = "true"
+    LANGSMITH_ENDPOINT: str = "https://eu.api.smith.langchain.com"
 
 
 settings = Settings.model_validate({})
+
+os.environ["LANGSMITH_API_KEY"]    = settings.LANGSMITH_API_KEY
+os.environ["LANGSMITH_PROJECT"]    = settings.LANGSMITH_PROJECT
+os.environ["LANGSMITH_TRACING"]    = settings.LANGSMITH_TRACING
+os.environ["LANGSMITH_ENDPOINT"]   = settings.LANGSMITH_ENDPOINT
