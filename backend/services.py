@@ -3,6 +3,7 @@ from qdrant_client import QdrantClient
 from config import settings
 from langchain_openai import OpenAIEmbeddings
 from pydantic import SecretStr
+from langchain_openai import ChatOpenAI
 
 embeddings = OpenAIEmbeddings(
     model="text-embedding-3-small",
@@ -14,3 +15,5 @@ vector_store = QdrantVectorStore(
     collection_name=settings.QDRANT_COLLECTION_NAME,
     embedding=embeddings,
 )
+
+llm = ChatOpenAI(model="gpt-5.4-mini", temperature=0, api_key=SecretStr(settings.OPENAI_API_KEY))
