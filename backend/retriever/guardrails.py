@@ -1,8 +1,6 @@
 """Guardrails module: validates and filters retrieval results for safety and relevance."""
 from langchain_core.documents import Document
-
-class InsufficientContextError(Exception):
-    pass
+from exceptions import InsufficientContextError
 
 RELEVANCE_SCORE_THRESHOLD = 0.3
 
