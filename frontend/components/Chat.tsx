@@ -56,7 +56,7 @@ export function Chat() {
             disabled={isStreaming}
             className={cn(
               "max-h-40 min-h-[40px] flex-1 py-2.5 text-sm leading-relaxed",
-              "bg-muted/40 focus-visible:ring-ring/60"
+              "bg-card text-foreground caret-foreground focus-visible:ring-ring/60"
             )}
           />
           <Button
