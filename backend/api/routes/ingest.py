@@ -20,7 +20,7 @@ async def ingest_file_route(file: UploadFile) -> IngestJobResponse:
         # 2. Write the uploaded file content to the temp file
         tmp.write(await file.read())
         tmp.flush()
-        await file_dispatcher(file_name=tmp.name, file_content_type=file.content_type or "")
+        await file_dispatcher(file_path=tmp.name, file_name=file.filename or "", file_content_type=file.content_type or "")
     job_id = str(uuid.uuid4())
     return IngestJobResponse(job_id=job_id, status="queued")
 

@@ -2,8 +2,7 @@
 
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
-from langchain_qdrant import QdrantVectorStore
+from typing import Optional
 import asyncio
 from services import vector_store
 
@@ -52,7 +51,10 @@ async def index_documents(chunks: list[Document]) -> None:
         )
 
 
-async def ingest_documents(documents: list[Document]) -> None:
+async def ingest_documents(documents: list[Document], file_name: Optional[str] = None) -> None:
+    if file_name:
+        for document in documents:
+            document.metadata["source"] = file_name
     
     chunks = await split_documents(documents)
     await index_documents(chunks)

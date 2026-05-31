@@ -17,11 +17,11 @@ def is_youtube_url(url: HttpUrl) -> bool:
     match = re.match(youtube_regex, str(url))
     return match is not None
 
-async def file_dispatcher(file_name: str, file_content_type: str) -> None:
+async def file_dispatcher(file_path: str, file_content_type: str, file_name: str,) -> None:
     if file_content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        await ingest_docx(file_name)
+        await ingest_docx(file_path, file_name)
     elif file_content_type == "application/pdf":
-        await ingest_pdf(file_name)
+        await ingest_pdf(file_path, file_name)
     else:
         raise ValueError(f"Unsupported file type: {file_content_type}")
     

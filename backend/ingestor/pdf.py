@@ -2,9 +2,9 @@
 from langchain_community.document_loaders import PyPDFLoader
 from ingestor.pipeline import ingest_documents
 
-async def ingest_pdf(file_path: str):
+async def ingest_pdf(file_path: str, file_name: str):
     loader = PyPDFLoader(file_path=file_path)
     documents = loader.load()
     print("ingesting pdf")
-    await ingest_documents(documents)
+    await ingest_documents(documents, file_name)
     print("pdf ingested")
