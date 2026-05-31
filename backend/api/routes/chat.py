@@ -7,22 +7,20 @@ from typing import AsyncGenerator
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-
+from exceptions import InsufficientContextError
 from models.schemas import ChatRequest
-
+from chain import rag_chain
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 
-async def _placeholder_stream() -> AsyncGenerator[str, None]:
-    # TODO: replace with actual RAG chain streaming output
-    for chunk in ["placeholder", " ", "response"]:
-        yield chunk
-        await asyncio.sleep(0)
-
+async def _placeholder_stream(query: str) -> AsyncGenerator[str, None]:
+    chain = rag_chain()
+    try:
+        async for chunk in chain.astream({"question": query}):
+            yield chunk
+    except InsufficientContextError:
+        yield "I could not find a confident answer to your question in the provided documents."
 
 @router.post("/")
 async def chat(body: ChatRequest) -> StreamingResponse:
-    return StreamingResponse(
-        _placeholder_stream(),
-        media_type="text/plain",
-    )
+    return StreamingResponse(_placeholder_stream(query=body.message), media_type="text/plain")
