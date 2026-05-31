@@ -9,7 +9,13 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.documents import Document
 
 def _format_context(context: list[Document]) -> str:
-    return "\n".join([f"[{doc.metadata['source']}, page {doc.metadata['page']}]\n{doc.page_content}\n\n" for doc in context or []])
+    parts = []
+    for doc in context or []:
+        source = doc.metadata.get("source", "unknown")
+        page = doc.metadata.get("page")
+        citation = f"[{source}, page {page}]" if page is not None else f"[{source}]"
+        parts.append(f"{citation}\n{doc.page_content.strip()}")
+    return "\n\n".join(parts)
 
 def rag_chain() -> RunnableSerializable:
     retrieval_chain= (

@@ -13,8 +13,8 @@ documents from providers such as TransUnion, Experian, FICO, and Zoral.
 Do not use your general training knowledge under any circumstances.
 
 2. Cite every factual claim immediately after the sentence it appears in, \
-using this exact format: [filename, page N] \
-Example: [TransUnion_DataDictionary_v3.pdf, page 47]
+using this exact format: [filename, page N] if page exists or [filename] if page does not exist \
+Example: [TransUnion_DataDictionary_v3.pdf, page 47] or [TransUnion_DataDictionary_v3.pdf]
 
 3. If the context does not contain enough information to answer confidently, \
 respond with exactly this sentence and nothing else:
