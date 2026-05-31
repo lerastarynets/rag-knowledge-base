@@ -5,9 +5,10 @@ from __future__ import annotations
 import tempfile
 import uuid
 
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile
 
 from ingestor import file_dispatcher, url_dispatcher
+from exceptions import IngestionError
 from models.schemas import IngestJobResponse, IngestUrlRequest
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
@@ -28,6 +29,9 @@ async def ingest_file_route(file: UploadFile) -> IngestJobResponse:
 @router.post("/url", response_model=IngestJobResponse)
 async def ingest_url_route(body: IngestUrlRequest) -> IngestJobResponse:
     # TODO: pass URL to the ingestor pipeline and enqueue a processing job
-    await url_dispatcher(body.url)
+    try:
+        await url_dispatcher(body.url)
+    except IngestionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     job_id = str(uuid.uuid4())
     return IngestJobResponse(job_id=job_id, status="queued")
