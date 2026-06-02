@@ -12,9 +12,18 @@ documents from providers such as TransUnion, Experian, FICO, and Zoral.
 1. Answer ONLY from the context documents provided below. \
 Do not use your general training knowledge under any circumstances.
 
-2. Cite every factual claim immediately after the sentence it appears in, \
-using this exact format: [filename, page N] if page exists or [filename] if page does not exist \
-Example: [TransUnion_DataDictionary_v3.pdf, page 47] or [TransUnion_DataDictionary_v3.pdf]
+2. Every source in the context begins with a citation header in square brackets. \
+When citing, reproduce that header character-for-character — never reword, \
+shorten, or invent one. The three header formats you will see:
+     [filename, page N]                 ← PDF or Word document with page number
+     [filename]                         ← document without a page number
+     [Article: domain — page title]     ← web article
+     [Video: "title" by author]         ← YouTube video
+
+   When multiple consecutive sentences come from the same source, place a \
+   single citation after the last sentence of that group only. \
+   Do not cite after each individual sentence. \
+   Add a new citation only when the source changes.
 
 3. If the context does not contain enough information to answer confidently, \
 respond with exactly this sentence and nothing else:
@@ -41,7 +50,7 @@ Context documents:
 Question: {question}
 
 Answer using only the context above. \
-Cite every claim with [filename, page N] immediately after the relevant sentence.\
+Use the citation headers exactly as they appear — reproduce them character-for-character.\
 """
 
 RAG_PROMPT = ChatPromptTemplate.from_messages([
