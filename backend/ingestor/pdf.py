@@ -6,5 +6,7 @@ async def ingest_pdf(file_path: str, file_name: str):
     loader = PyPDFLoader(file_path=file_path)
     documents = loader.load()
     print("ingesting pdf")
+    for document in documents:
+        document.metadata["source_type"] = "pdf"
     await ingest_documents(documents, file_name)
     print("pdf ingested")

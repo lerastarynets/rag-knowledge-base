@@ -57,6 +57,7 @@ async def ingest_youtube(url: HttpUrl) -> None:
     for document in documents:
         document.metadata.update(video_info)
         document.metadata["video_id"] = video_id
+        document.metadata["source_type"] = "youtube"
 
     print("ingesting youtube", video_info.get("title"))
     await ingest_documents(documents, file_name=video_info["title"])

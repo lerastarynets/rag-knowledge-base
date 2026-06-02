@@ -6,5 +6,7 @@ async def ingest_docx(file_path: str, file_name: str):
     loader = Docx2txtLoader(file_path=file_path)
     documents = loader.load()
     print("ingesting docx")
+    for document in documents:
+        document.metadata["source_type"] = "docx"
     await ingest_documents(documents, file_name)
     print("docx ingested")

@@ -51,7 +51,7 @@ def _html_to_documents(html: str, *, source: str) -> list[Document]:
     return [
         Document(
             page_content=text,
-            metadata={"source": source, "title": title},
+            metadata={"source": source, "title": title, "source_type": "url"},
         )
     ]
 
