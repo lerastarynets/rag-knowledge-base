@@ -1,13 +1,19 @@
 """Load application settings from environment variables."""
 
-import os
+from pathlib import Path
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_ENV_FILE = Path(__file__).resolve().parent / ".env"
+
+# Populate os.environ so LangSmith (and other SDKs) read vars from backend/.env.
+load_dotenv(_ENV_FILE)
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=_ENV_FILE,
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
@@ -19,7 +25,7 @@ class Settings(BaseSettings):
     # Qdrant — vector database
     QDRANT_URL: str = "http://localhost:6333"
     QDRANT_API_KEY: str = ""  # empty = local instance, fill in = Qdrant Cloud
-    QDRANT_COLLECTION_NAME: str = "rag-knowledge-base"
+    QDRANT_COLLECTION_NAME: str
 
     # Cohere — reranking
     COHERE_API_KEY: str
@@ -27,16 +33,5 @@ class Settings(BaseSettings):
     # Anthropic — optional alternative LLM
     ANTHROPIC_API_KEY: str = ""
 
-    # LangSmith — LangChain tracing and evaluation
-    LANGSMITH_API_KEY: str
-    LANGSMITH_PROJECT: str = "rag-knowledge-base"
-    LANGSMITH_TRACING: str = "true"
-    LANGSMITH_ENDPOINT: str = "https://eu.api.smith.langchain.com"
-
 
 settings = Settings.model_validate({})
-
-os.environ["LANGSMITH_API_KEY"] = settings.LANGSMITH_API_KEY
-os.environ["LANGSMITH_PROJECT"] = settings.LANGSMITH_PROJECT
-os.environ["LANGSMITH_TRACING"] = settings.LANGSMITH_TRACING
-os.environ["LANGSMITH_ENDPOINT"] = settings.LANGSMITH_ENDPOINT
