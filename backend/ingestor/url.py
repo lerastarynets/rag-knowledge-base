@@ -19,7 +19,10 @@ BROWSER_HEADERS = {
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/120.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept": (
+        "text/html,application/xhtml+xml,application/xml;q=0.9,"
+        "image/webp,*/*;q=0.8"
+    ),
     "Accept-Language": "en-US,en;q=0.5",
     "Accept-Encoding": "gzip, deflate, br",
     "Referer": "https://www.google.com/",
@@ -61,17 +64,19 @@ async def ingest_url(url: HttpUrl) -> None:
 
     try:
         async with httpx.AsyncClient(
-            timeout=HTTP_TIMEOUT_SECONDS,
-            follow_redirects=True,
-            headers=BROWSER_HEADERS
+            timeout=HTTP_TIMEOUT_SECONDS, follow_redirects=True, headers=BROWSER_HEADERS
         ) as client:
             response = await client.get(url_str)
             response.raise_for_status()
             final_url = str(response.url)
-            content_type = response.headers.get("content-type", "").split(";")[0].strip().lower()
+            content_type = (
+                response.headers.get("content-type", "").split(";")[0].strip().lower()
+            )
             html = response.text
     except httpx.HTTPStatusError as exc:
-        raise IngestionError(f"URL returned HTTP {exc.response.status_code}: {url_str}") from exc
+        raise IngestionError(
+            f"URL returned HTTP {exc.response.status_code}: {url_str}"
+        ) from exc
     except httpx.HTTPError as exc:
         raise IngestionError(f"Failed to fetch URL: {url_str}") from exc
 
@@ -87,5 +92,7 @@ async def ingest_url(url: HttpUrl) -> None:
     assert_content_quality(documents)
 
     print("ingesting url", final_url)
-    await ingest_documents(documents, file_name=documents[0].metadata.get("title") or final_url)
+    await ingest_documents(
+        documents, file_name=documents[0].metadata.get("title") or final_url
+    )
     print("url ingested")

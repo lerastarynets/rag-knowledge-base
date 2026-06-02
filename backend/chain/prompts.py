@@ -50,10 +50,13 @@ Context documents:
 Question: {question}
 
 Answer using only the context above. \
-Use the citation headers exactly as they appear — reproduce them character-for-character.\
+Use the citation headers exactly as they appear — \
+reproduce them character-for-character.\
 """
 
-RAG_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", SYSTEM_PROMPT),
-    ("human", USER_PROMPT),
-])
+RAG_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        ("system", SYSTEM_PROMPT),
+        ("human", USER_PROMPT),
+    ]
+)

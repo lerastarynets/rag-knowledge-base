@@ -8,6 +8,7 @@ from typing import Literal
 from langchain_core.documents import Document
 
 from exceptions import IngestionError
+
 MIN_CONTENT_LENGTH = 200
 
 VIDEO_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]{11}$")
@@ -99,4 +100,6 @@ def reject_login_or_error_title(title: str) -> None:
         return
     for marker in LOGIN_TITLE_MARKERS:
         if marker in normalized:
-            raise IngestionError(f"Page title indicates blocked or error content: {title!r}")
+            raise IngestionError(
+                f"Page title indicates blocked or error content: {title!r}"
+            )

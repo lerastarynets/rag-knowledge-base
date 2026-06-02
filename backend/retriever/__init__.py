@@ -1,6 +1,6 @@
 """Retriever package for searching and retrieving relevant document chunks."""
 
-from .search import search
 from .guardrails import assert_relevance
+from .search import search
 
 __all__ = ["search", "assert_relevance"]

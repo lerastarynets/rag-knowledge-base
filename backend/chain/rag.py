@@ -5,7 +5,11 @@ from urllib.parse import urlparse
 
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnableLambda, RunnablePassthrough, RunnableSerializable
+from langchain_core.runnables import (
+    RunnableLambda,
+    RunnablePassthrough,
+    RunnableSerializable,
+)
 
 from retriever import assert_relevance, search
 from services import llm
@@ -43,12 +47,17 @@ def _format_context(context: list[Document]) -> str:
         parts.append(f"{citation}\n{doc.page_content.strip()}")
     return "\n\n".join(parts)
 
+
 def rag_chain() -> RunnableSerializable:
-    retrieval_chain= (
-        RunnablePassthrough.assign(context=itemgetter("question") 
-                                | RunnableLambda(search) | RunnableLambda(assert_relevance) | RunnableLambda(_format_context))
-                                | RAG_PROMPT
-                                | llm
-                                | StrOutputParser()
-                                )
+    retrieval_chain = (
+        RunnablePassthrough.assign(
+            context=itemgetter("question")
+            | RunnableLambda(search)
+            | RunnableLambda(assert_relevance)
+            | RunnableLambda(_format_context)
+        )
+        | RAG_PROMPT
+        | llm
+        | StrOutputParser()
+    )
     return retrieval_chain

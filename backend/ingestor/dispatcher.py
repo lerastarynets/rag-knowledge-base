@@ -15,7 +15,10 @@ async def file_dispatcher(
     file_content_type: str,
     file_name: str,
 ) -> None:
-    if file_content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    if (
+        file_content_type
+        == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ):
         await ingest_docx(file_path, file_name)
     elif file_content_type == "application/pdf":
         await ingest_pdf(file_path, file_name)

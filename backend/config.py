@@ -1,7 +1,8 @@
-"""Configuration module: loads and exposes application settings from environment variables."""
+"""Load application settings from environment variables."""
+
+import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-import os
 
 
 class Settings(BaseSettings):
@@ -17,7 +18,7 @@ class Settings(BaseSettings):
 
     # Qdrant — vector database
     QDRANT_URL: str = "http://localhost:6333"
-    QDRANT_API_KEY: str = ""          # empty = local instance, fill in = Qdrant Cloud
+    QDRANT_API_KEY: str = ""  # empty = local instance, fill in = Qdrant Cloud
     QDRANT_COLLECTION_NAME: str = "rag-knowledge-base"
 
     # Cohere — reranking
@@ -35,7 +36,7 @@ class Settings(BaseSettings):
 
 settings = Settings.model_validate({})
 
-os.environ["LANGSMITH_API_KEY"]    = settings.LANGSMITH_API_KEY
-os.environ["LANGSMITH_PROJECT"]    = settings.LANGSMITH_PROJECT
-os.environ["LANGSMITH_TRACING"]    = settings.LANGSMITH_TRACING
-os.environ["LANGSMITH_ENDPOINT"]   = settings.LANGSMITH_ENDPOINT
+os.environ["LANGSMITH_API_KEY"] = settings.LANGSMITH_API_KEY
+os.environ["LANGSMITH_PROJECT"] = settings.LANGSMITH_PROJECT
+os.environ["LANGSMITH_TRACING"] = settings.LANGSMITH_TRACING
+os.environ["LANGSMITH_ENDPOINT"] = settings.LANGSMITH_ENDPOINT

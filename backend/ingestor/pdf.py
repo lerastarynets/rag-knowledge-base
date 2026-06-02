@@ -1,6 +1,9 @@
 """PDF ingestor: loads and parses PDF files into text chunks for indexing."""
+
 from langchain_community.document_loaders import PyPDFLoader
+
 from ingestor.pipeline import ingest_documents
+
 
 async def ingest_pdf(file_path: str, file_name: str):
     loader = PyPDFLoader(file_path=file_path)
