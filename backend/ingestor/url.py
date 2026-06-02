@@ -13,6 +13,20 @@ from ingestor.validation import assert_content_quality, reject_login_or_error_ti
 
 HTTP_TIMEOUT_SECONDS = 30.0
 
+BROWSER_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Referer": "https://www.google.com/",
+    "DNT": "1",
+    "Upgrade-Insecure-Requests": "1",
+}
+
 ALLOWED_CONTENT_TYPES = frozenset(
     {
         "text/html",
@@ -49,6 +63,7 @@ async def ingest_url(url: HttpUrl) -> None:
         async with httpx.AsyncClient(
             timeout=HTTP_TIMEOUT_SECONDS,
             follow_redirects=True,
+            headers=BROWSER_HEADERS
         ) as client:
             response = await client.get(url_str)
             response.raise_for_status()
