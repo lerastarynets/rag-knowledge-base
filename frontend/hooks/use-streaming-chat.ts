@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { streamChat } from "@/lib/api";
+import { parseFeedbackHeaders, streamChat } from "@/lib/api";
 import type { ChatMessage } from "@/lib/api";
 
 export function useStreamingChat() {
@@ -36,6 +36,15 @@ export function useStreamingChat() {
 
       try {
         const response = await streamChat(trimmed, sessionId.current);
+        const feedbackUrls = parseFeedbackHeaders(response);
+        if (feedbackUrls) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId ? { ...m, feedbackUrls } : m
+            )
+          );
+        }
+
         const reader = response.body?.getReader();
         if (!reader) throw new Error("No response body");
         const decoder = new TextDecoder();

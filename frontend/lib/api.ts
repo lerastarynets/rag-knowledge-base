@@ -10,14 +10,9 @@ export interface IngestJobResponse {
   status: "queued";
 }
 
-export interface FeedbackRequest {
-  message_id: string;
-  rating: "up" | "down";
-  comment?: string | null;
-}
-
-export interface FeedbackResponse {
-  received: boolean;
+export interface FeedbackUrls {
+  up: string;
+  down: string;
 }
 
 export interface Citation {
@@ -32,6 +27,7 @@ export interface ChatMessage {
   content: string;
   isStreaming?: boolean;
   citations: Citation[];
+  feedbackUrls?: FeedbackUrls;
 }
 
 // ---------------------------------------------------------------------------
@@ -81,17 +77,27 @@ export async function streamChat(
 }
 
 // ---------------------------------------------------------------------------
-// Feedback
+// Feedback (LangSmith presigned URLs — no API key required)
 // ---------------------------------------------------------------------------
 
-export async function submitFeedback(
-  payload: FeedbackRequest
-): Promise<FeedbackResponse> {
-  const res = await fetch(`${BASE_URL}/feedback/`, {
+export function parseFeedbackHeaders(response: Response): FeedbackUrls | null {
+  const up = response.headers.get("X-Feedback-Up");
+  const down = response.headers.get("X-Feedback-Down");
+  if (!up || !down) return null;
+  return { up, down };
+}
+
+export async function submitLangSmithFeedback(
+  presignedUrl: string,
+  comment?: string
+): Promise<void> {
+  const res = await fetch(presignedUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      score: 1,
+      ...(comment ? { comment } : {}),
+    }),
   });
   if (!res.ok) throw new Error(`Feedback failed: ${res.status}`);
-  return res.json() as Promise<FeedbackResponse>;
 }

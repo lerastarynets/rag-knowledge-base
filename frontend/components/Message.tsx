@@ -37,7 +37,9 @@ function UserBubble({ content }: { content: string }) {
 }
 
 function AssistantBubble({ message }: { message: ChatMessage }) {
-  const { feedback, submit } = useMessageFeedback(message.id);
+  const { feedback, submit, canSubmit } = useMessageFeedback(
+    message.feedbackUrls
+  );
 
   return (
     <div className="flex flex-col gap-2 px-4">
@@ -67,10 +69,11 @@ function AssistantBubble({ message }: { message: ChatMessage }) {
         </div>
       )}
 
-      {!message.isStreaming && (
+      {!message.isStreaming && canSubmit && (
         <div className="flex items-center gap-1 pl-1">
           <button
             onClick={() => submit("up")}
+            disabled={feedback !== null}
             aria-label="Thumbs up"
             className={cn(
               "rounded-md p-1 transition-colors",
@@ -84,6 +87,7 @@ function AssistantBubble({ message }: { message: ChatMessage }) {
           </button>
           <button
             onClick={() => submit("down")}
+            disabled={feedback !== null}
             aria-label="Thumbs down"
             className={cn(
               "rounded-md p-1 transition-colors",

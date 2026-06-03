@@ -1,21 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { submitFeedback } from "@/lib/api";
+import { submitLangSmithFeedback } from "@/lib/api";
+import type { FeedbackUrls } from "@/lib/api";
 
-export function useMessageFeedback(messageId: string) {
+export function useMessageFeedback(feedbackUrls?: FeedbackUrls) {
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
 
   const submit = async (rating: "up" | "down") => {
-    if (feedback !== null) return;
+    if (feedback !== null || !feedbackUrls) return;
     setFeedback(rating);
     try {
-      // TODO: replace messageId with the real message_id returned by the backend
-      await submitFeedback({ message_id: messageId, rating });
+      const url = rating === "up" ? feedbackUrls.up : feedbackUrls.down;
+      await submitLangSmithFeedback(url);
     } catch {
-      // silently fail; feedback is best-effort
+      setFeedback(null);
     }
   };
 
-  return { feedback, submit };
+  return { feedback, submit, canSubmit: Boolean(feedbackUrls) };
 }
