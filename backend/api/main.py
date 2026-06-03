@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routes import chat, feedback, ingest
+from api.routes import chat, ingest
 from models.schemas import HealthResponse
 
 app = FastAPI(title="RAG Knowledge Base API")
@@ -20,7 +20,6 @@ app.add_middleware(
 
 app.include_router(ingest.router)
 app.include_router(chat.router)
-app.include_router(feedback.router)
 
 
 @app.get("/health", response_model=HealthResponse)

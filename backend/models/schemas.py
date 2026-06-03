@@ -31,21 +31,6 @@ class ChatRequest(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Feedback
-# ---------------------------------------------------------------------------
-
-
-class FeedbackRequest(BaseModel):
-    message_id: str
-    rating: Literal["up", "down"]
-    comment: str | None = None
-
-
-class FeedbackResponse(BaseModel):
-    received: bool
-
-
-# ---------------------------------------------------------------------------
 # Health
 # ---------------------------------------------------------------------------
 
