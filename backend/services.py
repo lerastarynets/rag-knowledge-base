@@ -1,5 +1,6 @@
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
+from langsmith import Client
 from pydantic import SecretStr
 from qdrant_client import QdrantClient
 
@@ -21,3 +22,5 @@ vector_store = QdrantVectorStore(
 llm = ChatOpenAI(
     model="gpt-5.4-mini", temperature=0, api_key=SecretStr(settings.OPENAI_API_KEY)
 )
+
+langsmith_client = Client()
