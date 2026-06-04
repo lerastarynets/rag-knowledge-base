@@ -3,14 +3,7 @@
 import { useState } from "react";
 import { ingestUrl } from "@/lib/api";
 import type { AsyncStatus } from "@/hooks/types";
-
-function extractDomain(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
-}
+import { extractDomain } from "@/lib/utils";
 
 export function useUrlIngest(onIngested: (label: string) => void) {
   const [url, setUrl] = useState("");

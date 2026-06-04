@@ -1,15 +1,10 @@
 "use client";
 
 import { FileText, Link } from "lucide-react";
-import { cn } from "@/lib/utils";
+import type { Citation } from "@/lib/api";
+import { cn, extractDomain } from "@/lib/utils";
 
-interface CitationChipProps {
-  filename: string;
-  page: number | null;
-  url: string | null;
-}
-
-export function CitationChip({ filename, page, url }: CitationChipProps) {
+export function CitationChip({ filename, page, url }: Citation) {
   const label = url ? extractDomain(url) : filename;
   const tooltip = [filename, page != null ? `p. ${page}` : null]
     .filter(Boolean)
@@ -55,12 +50,4 @@ export function CitationChip({ filename, page, url }: CitationChipProps) {
       )}
     </div>
   );
-}
-
-function extractDomain(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
 }

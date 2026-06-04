@@ -65,12 +65,14 @@ export async function ingestUrl(url: string): Promise<IngestJobResponse> {
  */
 export async function streamChat(
   message: string,
-  sessionId: string
+  sessionId: string,
+  signal?: AbortSignal
 ): Promise<Response> {
   const res = await fetch(`${BASE_URL}/chat/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, session_id: sessionId }),
+    signal,
   });
   if (!res.ok) throw new Error(`Chat failed: ${res.status}`);
   return res;
@@ -87,6 +89,11 @@ export function parseFeedbackHeaders(response: Response): FeedbackUrls | null {
   return { up, down };
 }
 
+/**
+ * Submit feedback via a presigned LangSmith token URL.
+ * Score is always 1: the backend issues separate tokens per feedback key
+ * (thumbs_up vs thumbs_down), so the URL selects the rating.
+ */
 export async function submitLangSmithFeedback(
   presignedUrl: string,
   comment?: string
