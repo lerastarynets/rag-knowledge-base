@@ -9,7 +9,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from langchain_core.runnables import RunnableConfig
 
-from chain import rag_chain
+from chain import RAG_CHAIN
 from exceptions import InsufficientContextError
 from models.schemas import ChatRequest
 from services import langsmith_client
@@ -21,13 +21,12 @@ INSUFFICIENT_CONTEXT_MESSAGE = (
 )
 
 
-async def _placeholder_stream(
-    query: str, run_id: uuid.UUID
-) -> AsyncGenerator[str, None]:
-    chain = rag_chain()
+async def _chat_stream(query: str, run_id: uuid.UUID) -> AsyncGenerator[str, None]:
+    # body.session_id is accepted for API compatibility; memory is not implemented yet.
     try:
-        async for chunk in chain.astream(
-            {"question": query}, config=RunnableConfig(run_id=run_id, run_name="chat")
+        async for chunk in RAG_CHAIN.astream(
+            {"question": query},
+            config=RunnableConfig(run_id=run_id, run_name="chat"),
         ):
             yield chunk
     except InsufficientContextError:
@@ -46,6 +45,6 @@ async def chat(body: ChatRequest) -> StreamingResponse:
             "X-Feedback-Up": tokens[0].url,
             "X-Feedback-Down": tokens[1].url,
         },
-        content=_placeholder_stream(query=body.message, run_id=run_id),
+        content=_chat_stream(query=body.message, run_id=run_id),
         media_type="text/plain",
     )

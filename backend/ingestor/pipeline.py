@@ -1,12 +1,14 @@
 """Ingest documents from various sources and enqueue processing jobs."""
 
 import asyncio
-from typing import Optional
+import logging
 
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from services import vector_store
+
+logger = logging.getLogger(__name__)
 
 BATCH_SIZE = 100
 
@@ -18,32 +20,37 @@ async def split_documents(documents: list[Document]) -> list[Document]:
 
 async def index_documents(chunks: list[Document]) -> None:
     if not chunks:
-        print("VectorStore Indexing: No documents to index")
+        logger.info("VectorStore Indexing: No documents to index")
         return
 
-    print(
-        f"VectorStore Indexing: Preparing to add {len(chunks)} documents "
-        "to vector store"
+    logger.info(
+        "VectorStore Indexing: Preparing to add %s documents to vector store",
+        len(chunks),
     )
 
     batches = [chunks[i : i + BATCH_SIZE] for i in range(0, len(chunks), BATCH_SIZE)]
 
-    print(
-        f"VectorStore Indexing: Split into {len(batches)} batches "
-        f"of {BATCH_SIZE} documents each"
+    logger.info(
+        "VectorStore Indexing: Split into %s batches of %s documents each",
+        len(batches),
+        BATCH_SIZE,
     )
 
     async def index_batch(batch: list[Document], batch_num: int) -> bool:
         try:
             await vector_store.aadd_documents(documents=batch)
-            print(
-                f"VectorStore Indexing: Batch {batch_num}/{len(batches)} "
-                f"({len(batch)} documents) added successfully"
+            logger.info(
+                "VectorStore Indexing: Batch %s/%s (%s documents) added successfully",
+                batch_num,
+                len(batches),
+                len(batch),
             )
-        except Exception as e:
-            print(
-                f"VectorStore Indexing: Error adding batch "
-                f"{batch_num}/{len(batches)} ({len(batch)} documents): {e}"
+        except Exception:
+            logger.exception(
+                "VectorStore Indexing: Error adding batch %s/%s (%s documents)",
+                batch_num,
+                len(batches),
+                len(batch),
             )
             return False
         return True
@@ -54,22 +61,24 @@ async def index_documents(chunks: list[Document]) -> None:
     ]
     results = await asyncio.gather(*tasks)
 
-    successful = sum(1 for result in results if result is True)
+    successful = sum(results)
 
     if successful == len(batches):
-        print(
-            f"VectorStore Indexing: All batches processed successfully! "
-            f"({successful}/{len(batches)})"
+        logger.info(
+            "VectorStore Indexing: All batches processed successfully! (%s/%s)",
+            successful,
+            len(batches),
         )
     else:
-        print(
-            f"VectorStore Indexing: Processed {successful}/{len(batches)} "
-            "batches successfully"
+        logger.warning(
+            "VectorStore Indexing: Processed %s/%s batches successfully",
+            successful,
+            len(batches),
         )
 
 
 async def ingest_documents(
-    documents: list[Document], file_name: Optional[str] = None
+    documents: list[Document], file_name: str | None = None
 ) -> None:
     if file_name:
         for document in documents:

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl
 
 # ---------------------------------------------------------------------------
 # Ingest
@@ -27,7 +27,9 @@ class IngestJobResponse(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
-    session_id: str
+    session_id: str = Field(
+        description="Reserved for future multi-turn memory; not used by the server yet."
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 import httpx
 from bs4 import BeautifulSoup
 from langchain_core.documents import Document
@@ -10,6 +12,8 @@ from pydantic import HttpUrl
 from exceptions import IngestionError
 from ingestor.pipeline import ingest_documents
 from ingestor.validation import assert_content_quality, reject_login_or_error_title
+
+logger = logging.getLogger(__name__)
 
 HTTP_TIMEOUT_SECONDS = 30.0
 
@@ -20,8 +24,7 @@ BROWSER_HEADERS = {
         "Chrome/120.0.0.0 Safari/537.36"
     ),
     "Accept": (
-        "text/html,application/xhtml+xml,application/xml;q=0.9,"
-        "image/webp,*/*;q=0.8"
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
     ),
     "Accept-Language": "en-US,en;q=0.5",
     "Accept-Encoding": "gzip, deflate, br",
@@ -91,8 +94,8 @@ async def ingest_url(url: HttpUrl) -> None:
 
     assert_content_quality(documents)
 
-    print("ingesting url", final_url)
+    logger.info("ingesting url: %s", final_url)
     await ingest_documents(
         documents, file_name=documents[0].metadata.get("title") or final_url
     )
-    print("url ingested")
+    logger.info("url ingested")

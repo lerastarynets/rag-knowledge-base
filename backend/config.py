@@ -34,4 +34,4 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
 
 
-settings = Settings.model_validate({})
+settings = Settings()

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 
 import httpx
 from langchain_community.document_loaders import YoutubeLoader
@@ -11,6 +12,8 @@ from pydantic import HttpUrl
 from exceptions import IngestionError
 from ingestor.pipeline import ingest_documents
 from ingestor.validation import assert_content_quality, extract_youtube_video_id
+
+logger = logging.getLogger(__name__)
 
 HTTP_TIMEOUT_SECONDS = 15.0
 
@@ -49,8 +52,7 @@ async def ingest_youtube(url: HttpUrl) -> None:
     loader = YoutubeLoader.from_youtube_url(canonical_url, add_video_info=False)
     documents = await asyncio.to_thread(loader.load)
     if not documents:
-        print("ingesting youtube: no transcript available")
-        return
+        raise IngestionError("No transcript available for this video")
 
     assert_content_quality(documents, source="youtube")
 
@@ -59,6 +61,6 @@ async def ingest_youtube(url: HttpUrl) -> None:
         document.metadata["video_id"] = video_id
         document.metadata["source_type"] = "youtube"
 
-    print("ingesting youtube", video_info.get("title"))
+    logger.info("ingesting youtube: %s", video_info.get("title"))
     await ingest_documents(documents, file_name=video_info["title"])
-    print("youtube ingested")
+    logger.info("youtube ingested")

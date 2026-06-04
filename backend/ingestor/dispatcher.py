@@ -2,7 +2,7 @@
 
 from pydantic import HttpUrl
 
-from exceptions import IngestionError
+from exceptions import IngestionError, UnsupportedFileTypeError
 from ingestor.docx import ingest_docx
 from ingestor.pdf import ingest_pdf
 from ingestor.url import ingest_url
@@ -23,7 +23,7 @@ async def file_dispatcher(
     elif file_content_type == "application/pdf":
         await ingest_pdf(file_path, file_name)
     else:
-        raise ValueError(f"Unsupported file type: {file_content_type}")
+        raise UnsupportedFileTypeError(f"Unsupported file type: {file_content_type}")
 
 
 async def url_dispatcher(url: HttpUrl) -> None:
