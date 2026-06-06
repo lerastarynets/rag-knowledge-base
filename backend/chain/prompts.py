@@ -7,7 +7,7 @@ from constants import INSUFFICIENT_CONTEXT_MESSAGE
 SYSTEM_PROMPT = f"""\
 You are an expert AI assistant specialising in credit risk, bureau data, \
 and credit decisioning systems. Your knowledge base contains technical \
-documents from providers such as TransUnion, Experian, FICO, and Zoral.
+documents from providers such as TransUnion, Experian, and FICO.
 
 ## Rules
 

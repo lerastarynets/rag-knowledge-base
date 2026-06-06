@@ -19,9 +19,6 @@ backend/.env
 backend/uploads/
 backend/data/
 
-# ── Root README (learning notes — keep private) ───────────────────────────────
-/README.md
-
 # ── macOS ──────────────────────────────────────────────────────────────────────
 .DS_Store
 **/.DS_Store
