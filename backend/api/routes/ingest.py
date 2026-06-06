@@ -42,7 +42,7 @@ async def ingest_file_route(file: UploadFile) -> IngestJobResponse:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     job_id = str(uuid.uuid4())
-    return IngestJobResponse(job_id=job_id, status="queued")
+    return IngestJobResponse(job_id=job_id, status="ok")
 
 
 @router.post("/url", response_model=IngestJobResponse)
@@ -52,4 +52,4 @@ async def ingest_url_route(body: IngestUrlRequest) -> IngestJobResponse:
     except IngestionError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     job_id = str(uuid.uuid4())
-    return IngestJobResponse(job_id=job_id, status="queued")
+    return IngestJobResponse(job_id=job_id, status="ok")

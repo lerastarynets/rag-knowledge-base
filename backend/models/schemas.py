@@ -16,8 +16,10 @@ class IngestUrlRequest(BaseModel):
 
 
 class IngestJobResponse(BaseModel):
-    job_id: str
-    status: Literal["queued"]
+    """Response after a synchronous ingest completes."""
+
+    job_id: str  # reserved for a future async job queue; placeholder for now
+    status: Literal["ok"]
 
 
 # ---------------------------------------------------------------------------

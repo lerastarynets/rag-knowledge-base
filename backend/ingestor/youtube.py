@@ -9,6 +9,7 @@ import httpx
 from langchain_community.document_loaders import YoutubeLoader
 from pydantic import HttpUrl
 
+from constants import SOURCE_TYPE_YOUTUBE
 from exceptions import IngestionError
 from ingestor.pipeline import ingest_documents
 from ingestor.validation import assert_content_quality, extract_youtube_video_id
@@ -59,7 +60,7 @@ async def ingest_youtube(url: HttpUrl) -> None:
     for document in documents:
         document.metadata.update(video_info)
         document.metadata["video_id"] = video_id
-        document.metadata["source_type"] = "youtube"
+        document.metadata["source_type"] = SOURCE_TYPE_YOUTUBE
 
     logger.info("ingesting youtube: %s", video_info.get("title"))
     await ingest_documents(documents, file_name=video_info["title"])

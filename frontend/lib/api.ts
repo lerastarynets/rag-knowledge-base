@@ -7,7 +7,7 @@ const BASE_URL =
 
 export interface IngestJobResponse {
   job_id: string;
-  status: "queued";
+  status: "ok";
 }
 
 export interface FeedbackUrls {
@@ -15,6 +15,7 @@ export interface FeedbackUrls {
   down: string;
 }
 
+/** UI shape for source chips; backend does not send citations yet. */
 export interface Citation {
   filename: string;
   page: number | null;
@@ -26,8 +27,18 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   isStreaming?: boolean;
+  /** Always [] until the API streams citation metadata. */
   citations: Citation[];
   feedbackUrls?: FeedbackUrls;
+}
+
+async function throwApiError(res: Response, fallback: string): Promise<never> {
+  const body = (await res.json().catch(() => null)) as {
+    detail?: string;
+  } | null;
+  throw new Error(
+    typeof body?.detail === "string" ? body.detail : `${fallback}: ${res.status}`
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -41,7 +52,7 @@ export async function ingestFile(file: File): Promise<IngestJobResponse> {
     method: "POST",
     body: form,
   });
-  if (!res.ok) throw new Error(`Ingest file failed: ${res.status}`);
+  if (!res.ok) await throwApiError(res, "Ingest file failed");
   return res.json() as Promise<IngestJobResponse>;
 }
 
@@ -51,7 +62,7 @@ export async function ingestUrl(url: string): Promise<IngestJobResponse> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ url }),
   });
-  if (!res.ok) throw new Error(`Ingest URL failed: ${res.status}`);
+  if (!res.ok) await throwApiError(res, "Ingest URL failed");
   return res.json() as Promise<IngestJobResponse>;
 }
 
@@ -74,7 +85,7 @@ export async function streamChat(
     body: JSON.stringify({ message, session_id: sessionId }),
     signal,
   });
-  if (!res.ok) throw new Error(`Chat failed: ${res.status}`);
+  if (!res.ok) await throwApiError(res, "Chat failed");
   return res;
 }
 

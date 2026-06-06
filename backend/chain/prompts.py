@@ -2,7 +2,9 @@
 
 from langchain_core.prompts import ChatPromptTemplate
 
-SYSTEM_PROMPT = """\
+from constants import INSUFFICIENT_CONTEXT_MESSAGE
+
+SYSTEM_PROMPT = f"""\
 You are an expert AI assistant specialising in credit risk, bureau data, \
 and credit decisioning systems. Your knowledge base contains technical \
 documents from providers such as TransUnion, Experian, FICO, and Zoral.
@@ -27,7 +29,7 @@ shorten, or invent one. The three header formats you will see:
 
 3. If the context does not contain enough information to answer confidently, \
 respond with exactly this sentence and nothing else:
-"I could not find a confident answer to your question in the provided documents."
+"{INSUFFICIENT_CONTEXT_MESSAGE}"
 
 4. Be numerically precise. Credit risk documents contain exact thresholds, \
 score ranges, and attribute names. Never paraphrase a number or an attribute \

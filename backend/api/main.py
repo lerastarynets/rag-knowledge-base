@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import chat, ingest
+from constants import FEEDBACK_HEADER_DOWN, FEEDBACK_HEADER_UP
 from models.schemas import HealthResponse
 
 app = FastAPI(title="RAG Knowledge Base API")
@@ -16,7 +17,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["X-Feedback-Up", "X-Feedback-Down"],
+    expose_headers=[FEEDBACK_HEADER_UP, FEEDBACK_HEADER_DOWN],
 )
 
 app.include_router(ingest.router)

@@ -11,6 +11,12 @@ from langchain_core.runnables import (
     RunnableSerializable,
 )
 
+from constants import (
+    SOURCE_TYPE_DOCX,
+    SOURCE_TYPE_PDF,
+    SOURCE_TYPE_URL,
+    SOURCE_TYPE_YOUTUBE,
+)
 from retriever import assert_relevance, search
 from services import llm
 
@@ -22,16 +28,16 @@ def _format_citation(doc: Document) -> str:
     source_type = metadata.get("source_type")
     source = metadata.get("source", "unknown")
 
-    if source_type in ("pdf", "docx"):
+    if source_type in (SOURCE_TYPE_PDF, SOURCE_TYPE_DOCX):
         page = metadata.get("page")
         return f"[{source}, page {page}]" if page is not None else f"[{source}]"
 
-    if source_type == "url":
+    if source_type == SOURCE_TYPE_URL:
         title = metadata.get("title") or "Untitled"
         domain = urlparse(source).netloc or source
         return f"[Article: {domain} — {title}]"
 
-    if source_type == "youtube":
+    if source_type == SOURCE_TYPE_YOUTUBE:
         title = metadata.get("title", "Unknown")
         author = metadata.get("author", "Unknown")
         return f'[Video: "{title}" by {author}]'

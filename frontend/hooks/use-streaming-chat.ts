@@ -34,8 +34,7 @@ export function useStreamingChat() {
       role: "assistant",
       content: "",
       isStreaming: true,
-      // TODO: populate citations from backend metadata once available
-      citations: [],
+      citations: [], // stub — see Citation in lib/api.ts
     };
 
     setMessages((prev) => [...prev, userMsg, assistantMsg]);

@@ -1,4 +1,4 @@
-"""Ingest documents from various sources and enqueue processing jobs."""
+"""Ingest documents from various sources."""
 
 import asyncio
 import logging

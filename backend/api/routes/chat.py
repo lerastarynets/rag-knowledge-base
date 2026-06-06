@@ -10,15 +10,16 @@ from fastapi.responses import StreamingResponse
 from langchain_core.runnables import RunnableConfig
 
 from chain import RAG_CHAIN
+from constants import (
+    FEEDBACK_HEADER_DOWN,
+    FEEDBACK_HEADER_UP,
+    INSUFFICIENT_CONTEXT_MESSAGE,
+)
 from exceptions import InsufficientContextError
 from models.schemas import ChatRequest
 from services import langsmith_client
 
 router = APIRouter(prefix="/chat", tags=["chat"])
-
-INSUFFICIENT_CONTEXT_MESSAGE = (
-    "I could not find a confident answer to your question in the provided documents."
-)
 
 
 async def _chat_stream(query: str, run_id: uuid.UUID) -> AsyncGenerator[str, None]:
@@ -36,14 +37,16 @@ async def _chat_stream(query: str, run_id: uuid.UUID) -> AsyncGenerator[str, Non
 @router.post("/")
 async def chat(body: ChatRequest) -> StreamingResponse:
     run_id = uuid.uuid4()
-    tokens = langsmith_client.create_presigned_feedback_tokens(
-        run_id,
-        feedback_keys=["thumbs_up", "thumbs_down"],
+    thumbs_up = langsmith_client.create_presigned_feedback_token(
+        run_id, "thumbs_up"
+    )
+    thumbs_down = langsmith_client.create_presigned_feedback_token(
+        run_id, "thumbs_down"
     )
     return StreamingResponse(
         headers={
-            "X-Feedback-Up": tokens[0].url,
-            "X-Feedback-Down": tokens[1].url,
+            FEEDBACK_HEADER_UP: thumbs_up.url,
+            FEEDBACK_HEADER_DOWN: thumbs_down.url,
         },
         content=_chat_stream(query=body.message, run_id=run_id),
         media_type="text/plain",

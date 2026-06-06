@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from langchain_core.documents import Document
 from pydantic import HttpUrl
 
+from constants import SOURCE_TYPE_URL
 from exceptions import IngestionError
 from ingestor.pipeline import ingest_documents
 from ingestor.validation import assert_content_quality, reject_login_or_error_title
@@ -57,7 +58,7 @@ def _html_to_documents(html: str, *, source: str) -> list[Document]:
     return [
         Document(
             page_content=text,
-            metadata={"source": source, "title": title, "source_type": "url"},
+            metadata={"source": source, "title": title, "source_type": SOURCE_TYPE_URL},
         )
     ]
 
