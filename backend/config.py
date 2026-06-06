@@ -19,6 +19,8 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
+
     # OpenAI — embeddings and chat completions
     OPENAI_API_KEY: str
 
