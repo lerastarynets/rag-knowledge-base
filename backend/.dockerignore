@@ -1,0 +1,36 @@
+# Virtual environments
+.venv
+venv
+
+# Python bytecode and caches
+__pycache__
+*.py[cod]
+*$py.class
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Secrets and local env
+.env
+.env.*
+
+# Version control and OS
+.git
+.gitignore
+.DS_Store
+
+# IDE and editor
+.idea
+.vscode
+*.swp
+*.swo
+
+# Dev tooling
+pyrightconfig.json
+.python-version
+
+# Not needed in the image
+Dockerfile
+*.md
+uploads/
+data/
