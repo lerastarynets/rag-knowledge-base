@@ -14,11 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useFileIngest } from "@/hooks/use-file-ingest";
 import { useUrlIngest } from "@/hooks/use-url-ingest";
+import { useUrlIngestCapability } from "@/hooks/use-url-ingest-capability";
 import { useIngestedSources } from "@/hooks/use-ingested-sources";
+import { URL_INGEST_DISABLED_MESSAGE } from "@/lib/constants";
 import type { AsyncStatus } from "@/hooks/types";
 
 export function Sidebar() {
   const { sources, addSource } = useIngestedSources();
+  const { urlIngestEnabled } = useUrlIngestCapability();
 
   return (
     <aside className="flex h-screen w-[280px] shrink-0 flex-col border-r border-border bg-sidebar">
@@ -34,7 +37,10 @@ export function Sidebar() {
         </p>
 
         <FileUpload onIngested={(label) => addSource(label, "file")} />
-        <UrlIngest onIngested={(label) => addSource(label, "url")} />
+        <UrlIngest
+          urlIngestEnabled={urlIngestEnabled}
+          onIngested={(label) => addSource(label, "url")}
+        />
       </div>
 
       <div className="mx-4 border-t border-border" />
@@ -46,7 +52,9 @@ export function Sidebar() {
 
         {sources.length === 0 ? (
           <p className="mt-2 text-xs text-muted-foreground">
-            No sources yet. Upload a file or paste a URL above.
+            {urlIngestEnabled === false
+              ? "No sources yet. Upload a PDF or DOCX file above."
+              : "No sources yet. Upload a file or paste a URL above."}
           </p>
         ) : (
           <ul className="flex flex-col gap-1">
@@ -107,8 +115,18 @@ function FileUpload({ onIngested }: { onIngested: (label: string) => void }) {
   );
 }
 
-function UrlIngest({ onIngested }: { onIngested: (label: string) => void }) {
-  const { url, setUrl, status, errorMsg, handleSubmit } = useUrlIngest(onIngested);
+function UrlIngest({
+  urlIngestEnabled,
+  onIngested,
+}: {
+  urlIngestEnabled: boolean | null;
+  onIngested: (label: string) => void;
+}) {
+  const { url, setUrl, status, errorMsg, handleSubmit } = useUrlIngest(
+    onIngested,
+    urlIngestEnabled
+  );
+  const isDisabled = urlIngestEnabled === false;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-1.5">
@@ -119,14 +137,14 @@ function UrlIngest({ onIngested }: { onIngested: (label: string) => void }) {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           className="h-8 text-xs"
-          disabled={status === "loading"}
+          disabled={status === "loading" || isDisabled}
         />
         <Button
           type="submit"
           size="icon"
           variant="outline"
           className="size-8 shrink-0"
-          disabled={status === "loading" || !url.trim()}
+          disabled={status === "loading" || !url.trim() || isDisabled}
           aria-label="Add URL"
         >
           {status === "loading" ? (
@@ -137,11 +155,18 @@ function UrlIngest({ onIngested }: { onIngested: (label: string) => void }) {
         </Button>
       </div>
 
-      <IngestStatusLine
-        status={status}
-        successText="✓ Ingested"
-        errorText={errorMsg}
-      />
+      {isDisabled ? (
+        <p className="flex items-start gap-1 text-xs text-destructive">
+          <AlertCircle className="mt-0.5 size-3 shrink-0" />
+          {URL_INGEST_DISABLED_MESSAGE}
+        </p>
+      ) : (
+        <IngestStatusLine
+          status={status}
+          successText="✓ Ingested"
+          errorText={errorMsg}
+        />
+      )}
     </form>
   );
 }

@@ -58,7 +58,7 @@ The stack is general-purpose — swap in any document set and the pipeline stays
 
 ### Step 1 — You upload a document
 
-You upload a PDF or Word file via the sidebar file picker, or paste a web page or YouTube URL. The backend routes the request to the matching ingestor (PDF, DOCX, URL, or YouTube).
+You upload a PDF or Word file via the sidebar file picker. Locally, you can also paste a web page or YouTube URL — the backend routes the request to the matching ingestor (PDF, DOCX, URL, or YouTube). URL and YouTube ingestion is disabled on hosted deployments (see [Deployment notes](#deployment-notes)).
 
 ### Step 2 — Ingestion pipeline
 
@@ -174,3 +174,23 @@ Required API keys (add to `backend/.env`):
 - `COHERE_API_KEY` — [dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys)
 - `LANGSMITH_API_KEY` — [smith.langchain.com](https://smith.langchain.com)
 - `ANTHROPIC_API_KEY` — optional, only needed if swapping to Claude
+
+---
+
+## Deployment notes
+
+Backend runs on **Google Cloud Run**, outbound HTTP requests to external sites (Medium, YouTube, etc.) are blocked or unreliable. URL and YouTube ingestion depends on those fetches, so it must be turned off in that environment.
+
+Set this on your deployed backend service:
+
+```
+ENABLE_URL_INGEST=false
+```
+
+With that flag disabled:
+
+- `POST /ingest/url` returns **503** with a clear error message instead of an unhandled 500.
+- The frontend reads `url_ingest_enabled` from `GET /health` and **disables the URL input**, showing an explanatory message under the field.
+- **PDF/DOCX upload and chat continue to work** on hosted — only URL/YouTube ingest is affected.
+
+Locally, `ENABLE_URL_INGEST` defaults to `true` (or omit it entirely). The URL input stays enabled.

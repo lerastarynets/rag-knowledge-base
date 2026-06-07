@@ -41,3 +41,4 @@ class ChatRequest(BaseModel):
 
 class HealthResponse(BaseModel):
     status: Literal["ok"]
+    url_ingest_enabled: bool

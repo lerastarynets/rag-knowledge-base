@@ -27,4 +27,7 @@ app.include_router(chat.router)
 
 @app.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
-    return HealthResponse(status="ok")
+    return HealthResponse(
+        status="ok",
+        url_ingest_enabled=settings.ENABLE_URL_INGEST,
+    )

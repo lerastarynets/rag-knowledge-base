@@ -10,6 +10,11 @@ export interface IngestJobResponse {
   status: "ok";
 }
 
+export interface HealthResponse {
+  status: "ok";
+  url_ingest_enabled: boolean;
+}
+
 export interface FeedbackUrls {
   up: string;
   down: string;
@@ -39,6 +44,16 @@ async function throwApiError(res: Response, fallback: string): Promise<never> {
   throw new Error(
     typeof body?.detail === "string" ? body.detail : `${fallback}: ${res.status}`
   );
+}
+
+// ---------------------------------------------------------------------------
+// Health
+// ---------------------------------------------------------------------------
+
+export async function fetchHealth(): Promise<HealthResponse> {
+  const res = await fetch(`${BASE_URL}/health`);
+  if (!res.ok) throw new Error(`Health check failed: ${res.status}`);
+  return res.json() as Promise<HealthResponse>;
 }
 
 // ---------------------------------------------------------------------------

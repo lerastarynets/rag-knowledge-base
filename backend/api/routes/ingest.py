@@ -8,9 +8,15 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, UploadFile
 
+from config import settings
 from exceptions import IngestionError, UnsupportedFileTypeError
 from ingestor import file_dispatcher, url_dispatcher
 from models.schemas import IngestJobResponse, IngestUrlRequest
+
+URL_INGEST_DISABLED_MESSAGE = (
+    "URL and YouTube ingestion is not available in the hosted environment. "
+    "Please upload a PDF or DOCX file instead."
+)
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
 
@@ -47,6 +53,11 @@ async def ingest_file_route(file: UploadFile) -> IngestJobResponse:
 
 @router.post("/url", response_model=IngestJobResponse)
 async def ingest_url_route(body: IngestUrlRequest) -> IngestJobResponse:
+    if not settings.ENABLE_URL_INGEST:
+        raise HTTPException(
+            status_code=503,
+            detail=URL_INGEST_DISABLED_MESSAGE,
+        )
     try:
         await url_dispatcher(body.url)
     except IngestionError as exc:

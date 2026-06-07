@@ -5,14 +5,17 @@ import { ingestUrl } from "@/lib/api";
 import type { AsyncStatus } from "@/hooks/types";
 import { extractDomain } from "@/lib/utils";
 
-export function useUrlIngest(onIngested: (label: string) => void) {
+export function useUrlIngest(
+  onIngested: (label: string) => void,
+  urlIngestEnabled: boolean | null = true
+) {
   const [url, setUrl] = useState("");
   const [status, setStatus] = useState<AsyncStatus>("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url.trim()) return;
+    if (!url.trim() || urlIngestEnabled === false) return;
     setStatus("loading");
     setErrorMsg("");
     try {
