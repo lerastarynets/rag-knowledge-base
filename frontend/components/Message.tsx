@@ -2,7 +2,6 @@
 
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CitationChip } from "@/components/CitationChip";
 import { useMessageFeedback } from "@/hooks/use-message-feedback";
 import type { ChatMessage } from "@/lib/api";
 
@@ -55,19 +54,6 @@ function AssistantBubble({ message }: { message: ChatMessage }) {
           <span className="ml-0.5 inline-block h-[1em] w-0.5 translate-y-[2px] animate-pulse bg-foreground/70" />
         )}
       </div>
-
-      {message.citations.length > 0 && (
-        <div className="flex max-w-[85%] flex-wrap gap-1.5 pl-1">
-          {message.citations.map((c, i) => (
-            <CitationChip
-              key={i}
-              filename={c.filename}
-              page={c.page}
-              url={c.url}
-            />
-          ))}
-        </div>
-      )}
 
       {!message.isStreaming && canSubmit && (
         <div className="flex items-center gap-1 pl-1">

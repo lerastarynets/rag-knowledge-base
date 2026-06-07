@@ -20,20 +20,11 @@ export interface FeedbackUrls {
   down: string;
 }
 
-/** UI shape for source chips; backend does not send citations yet. */
-export interface Citation {
-  filename: string;
-  page: number | null;
-  url: string | null;
-}
-
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
   isStreaming?: boolean;
-  /** Always [] until the API streams citation metadata. */
-  citations: Citation[];
   feedbackUrls?: FeedbackUrls;
 }
 

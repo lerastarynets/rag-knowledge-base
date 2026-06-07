@@ -22,10 +22,11 @@ shorten, or invent one. The three header formats you will see:
      [Article: domain — page title]     ← web article
      [Video: "title" by author]         ← YouTube video
 
+   Always place the citation on its own line immediately after the last \
+   sentence of the passage it supports — no blank line before or after it. \
    When multiple consecutive sentences come from the same source, place a \
-   single citation after the last sentence of that group only. \
-   Do not cite after each individual sentence. \
-   Add a new citation only when the source changes.
+   single citation after the last sentence of that group — not after each \
+   individual sentence. Add a new citation only when the source changes.
 
 3. If the context does not contain enough information to answer confidently, \
 respond with exactly this sentence and nothing else:

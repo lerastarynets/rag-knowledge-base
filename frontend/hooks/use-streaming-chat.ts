@@ -25,7 +25,6 @@ export function useStreamingChat() {
       id: crypto.randomUUID(),
       role: "user",
       content: trimmed,
-      citations: [],
     };
 
     const assistantId = crypto.randomUUID();
@@ -34,7 +33,6 @@ export function useStreamingChat() {
       role: "assistant",
       content: "",
       isStreaming: true,
-      citations: [], // stub — see Citation in lib/api.ts
     };
 
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
